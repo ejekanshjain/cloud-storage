@@ -4,7 +4,8 @@
   "main": "build/index.js",
   "scripts": {
     "clean": "rimraf build && rimraf tsconfig.tsbuildinfo",
-    "build": "npm run clean && tsc"
+    "build": "npm run clean && tsc",
+    "watch": "npm run clean && tsc -w"
   },
   "devDependencies": {
     "@types/node": "^20.4.2",
