@@ -7,7 +7,7 @@
     "clean": "rimraf build && rimraf tsconfig.tsbuildinfo",
     "build": "npm run clean && tsc",
     "watch": "npm run clean && tsc -w",
-    "publish": "npm run build && npm publish --access public"
+    "publish": "npm publish --access public"
   },
   "repository": {
     "type": "git",
