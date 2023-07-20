@@ -1,4 +1,4 @@
 export * from './azure'
-export * from './firebase'
+export * from './gcp'
 export * from './s3'
 export * from './types'

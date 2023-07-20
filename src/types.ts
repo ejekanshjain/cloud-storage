@@ -6,7 +6,7 @@ export type S3ClientOptions = {
   host?: string
 }
 
-export type FirebaseClientOptions = {
+export type GCPStorageClientOptions = {
   projectId: string
   privateKey: string
   clientEmail: string

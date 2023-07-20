@@ -1,6 +1,6 @@
 import { config } from 'dotenv'
 import { AzureStorageClient } from './azure'
-import { FirestorageClient } from './firebase'
+import { GCPStorageClient } from './gcp'
 import { S3Client } from './s3'
 
 config()
@@ -29,15 +29,15 @@ const testS3 = async () => {
   await s3Client.deleteFile(testData.filename)
 }
 
-const testFirebaseStorage = async () => {
-  const firestorageClient = new FirestorageClient({
-    projectId: process.env.FIREBASE_PROJECT_ID!,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY!,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL!,
-    bucket: process.env.FIREBASE_STORAGE_BUCKET!
+const testGCPStorage = async () => {
+  const gcpStorageClient = new GCPStorageClient({
+    projectId: process.env.GCP_PROJECT_ID!,
+    privateKey: process.env.GCP_PRIVATE_KEY!,
+    clientEmail: process.env.GCP_CLIENT_EMAIL!,
+    bucket: process.env.GCP_STORAGE_BUCKET!
   })
 
-  await firestorageClient.addFile(
+  await gcpStorageClient.addFile(
     {
       filename: testData.filename,
       data: testData.data
@@ -45,9 +45,9 @@ const testFirebaseStorage = async () => {
     true
   )
 
-  await firestorageClient.getFile(testData.filename)
+  await gcpStorageClient.getFile(testData.filename)
 
-  await firestorageClient.deleteFile(testData.filename)
+  await gcpStorageClient.deleteFile(testData.filename)
 }
 
 const testAzureStorage = async () => {
@@ -68,7 +68,7 @@ const testAzureStorage = async () => {
 
 const main = async () => {
   await testS3()
-  await testFirebaseStorage()
+  await testGCPStorage()
   await testAzureStorage()
 }
 
