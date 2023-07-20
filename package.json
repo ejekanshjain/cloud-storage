@@ -1,13 +1,12 @@
 {
   "name": "@ejekanshjain/cloud-storage",
-  "version": "2.0.0",
+  "version": "2.0.3",
   "description": "All in one package to handle files accross cloud storage services",
   "main": "build/index.js",
   "scripts": {
     "clean": "rimraf build && rimraf tsconfig.tsbuildinfo",
     "build": "npm run clean && tsc",
-    "watch": "npm run clean && tsc -w",
-    "publish": "npm publish --access public"
+    "watch": "npm run clean && tsc -w"
   },
   "repository": {
     "type": "git",
