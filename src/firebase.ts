@@ -48,28 +48,19 @@ export class FirestorageClient {
       public: isPublic
     })
     const url = fileRef.publicUrl()
-    return {
-      response: fileRef,
-      url
-    }
+    return url
   }
 
   async deleteFile(filename: string) {
     const bucket = this.getBucket()
     const fileRef = bucket.file(filename)
     await fileRef.delete()
-    return {
-      response: fileRef
-    }
   }
 
   async getFile(filename: string) {
     const bucket = this.getBucket()
     const fileRef = bucket.file(filename)
     const downloaded = await fileRef.download()
-    return {
-      response: fileRef,
-      buffer: downloaded[0].copyWithin(0)
-    }
+    return Buffer.from(downloaded[0].copyWithin(0))
   }
 }

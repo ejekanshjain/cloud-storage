@@ -1,4 +1,5 @@
 import { config } from 'dotenv'
+import { AzureStorageClient } from './azure'
 import { FirestorageClient } from './firebase'
 import { S3Client } from './s3'
 
@@ -49,9 +50,26 @@ const testFirebaseStorage = async () => {
   await firestorageClient.deleteFile(testData.filename)
 }
 
+const testAzureStorage = async () => {
+  const azureStorageClient = new AzureStorageClient({
+    connectionString: process.env.AZURE_STORAGE_CONNECTION_STRING!,
+    containerName: process.env.AZURE_STORAGE_CONTAINER_NAME!
+  })
+
+  await azureStorageClient.addFile({
+    filename: testData.filename,
+    data: testData.data
+  })
+
+  await azureStorageClient.getFile(testData.filename)
+
+  await azureStorageClient.deleteFile(testData.filename)
+}
+
 const main = async () => {
   await testS3()
   await testFirebaseStorage()
+  await testAzureStorage()
 }
 
 main()

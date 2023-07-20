@@ -13,6 +13,11 @@ export type FirebaseClientOptions = {
   bucket: string
 }
 
+export type AzureStorageClientOptions = {
+  connectionString: string
+  containerName: string
+}
+
 export type AddFileOptions = {
   filename: string
   data: string | Buffer

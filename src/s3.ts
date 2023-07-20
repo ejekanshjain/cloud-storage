@@ -48,29 +48,25 @@ export class S3Client {
   }
 
   async addFile(options: AddFileOptions) {
-    const response = await this.s3Client.send(
+    await this.s3Client.send(
       new PutObjectCommand({
         Bucket: this.bucket,
         Key: options.filename,
         Body: options.data
       })
     )
-    return {
-      response,
-      url: this.host
-        ? `${this.host}/${this.bucket}/${options.filename}`
-        : `https://${this.bucket}.s3.${this.region}.amazonaws.com/${options.filename}`
-    }
+    return this.host
+      ? `${this.host}/${this.bucket}/${options.filename}`
+      : `https://${this.bucket}.s3.${this.region}.amazonaws.com/${options.filename}`
   }
 
   async deleteFile(filename: string) {
-    const response = await this.s3Client.send(
+    await this.s3Client.send(
       new DeleteObjectCommand({
         Bucket: this.bucket,
         Key: filename
       })
     )
-    return response
   }
 
   async getFile(filename: string) {
@@ -83,9 +79,6 @@ export class S3Client {
 
     if (!response.Body) throw new Error('AWS S3: No body in response')
 
-    return {
-      response,
-      buffer: Buffer.from((await response.Body.transformToByteArray()).buffer)
-    }
+    return Buffer.from((await response.Body.transformToByteArray()).buffer)
   }
 }
