@@ -1,12 +1,35 @@
 {
   "name": "@ejekanshjain/cloud-storage",
   "version": "1.0.0",
+  "description": "All in one package to handle files in different cloud storage services",
   "main": "build/index.js",
   "scripts": {
     "clean": "rimraf build && rimraf tsconfig.tsbuildinfo",
     "build": "npm run clean && tsc",
     "watch": "npm run clean && tsc -w"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ejekanshjain/cloud-storage.git"
+  },
+  "keywords": [
+    "cloud",
+    "storage",
+    "aws",
+    "s3",
+    "firebase",
+    "gcp",
+    "azure",
+    "r2",
+    "javascript",
+    "typescript"
+  ],
+  "author": "Ekansh Jain",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ejekanshjain/cloud-storage/issues"
+  },
+  "homepage": "https://github.com/ejekanshjain/cloud-storage#readme",
   "devDependencies": {
     "@types/node": "^20.4.2",
     "@types/prettier": "^2.7.3",
