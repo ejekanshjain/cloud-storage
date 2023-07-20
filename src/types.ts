@@ -1,4 +1,4 @@
-export interface S3ClientOptions {
+export type S3ClientOptions = {
   region: string
   accessKey: string
   accessSecret: string
@@ -6,7 +6,14 @@ export interface S3ClientOptions {
   host?: string
 }
 
-export interface AddFileOptions {
+export type FirebaseClientOptions = {
+  projectId: string
+  privateKey: string
+  clientEmail: string
+  bucket: string
+}
+
+export type AddFileOptions = {
   filename: string
   data: string | Buffer
 }
