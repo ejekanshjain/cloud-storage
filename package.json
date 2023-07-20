@@ -20,6 +20,7 @@
     "firebase",
     "gcp",
     "azure",
+    "cloudflare",
     "r2",
     "javascript",
     "typescript"
