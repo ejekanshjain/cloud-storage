@@ -1,12 +1,13 @@
 import { Storage } from '@google-cloud/storage'
 import { z } from 'zod'
-import { AddFileOptions, GCPStorageClientOptions } from './types'
+import { AddFileOptions } from './types'
 
 const GCPStorageClientOptionsZ = z.object({
   projectId: z.string().min(1),
   privateKey: z.string().min(1),
   clientEmail: z.string().min(1),
-  bucket: z.string().min(1)
+  bucket: z.string().min(1),
+  defaultMediaPublic: z.boolean()
 })
 
 export class GCPStorageClient {
@@ -15,13 +16,15 @@ export class GCPStorageClient {
   private clientEmail: string
   private bucket: string
   private storage: Storage
+  private isPublic: boolean
 
-  constructor(options?: GCPStorageClientOptions) {
+  constructor(options?: z.infer<typeof GCPStorageClientOptionsZ>) {
     const parsed = GCPStorageClientOptionsZ.parse(options)
     this.projectId = parsed.projectId
     this.privateKey = parsed.privateKey
     this.clientEmail = parsed.clientEmail
     this.bucket = parsed.bucket
+    this.isPublic = parsed.defaultMediaPublic
 
     this.storage = new Storage({
       projectId: this.projectId,
@@ -36,11 +39,11 @@ export class GCPStorageClient {
     return this.storage.bucket(this.bucket)
   }
 
-  async addFile(options: AddFileOptions, isPublic?: boolean) {
+  async addFile(options: AddFileOptions) {
     const bucket = this.getBucket()
     const fileRef = bucket.file(options.filename)
     await fileRef.save(options.data, {
-      public: isPublic
+      public: this.isPublic
     })
     const url = fileRef.publicUrl()
     return url
@@ -56,6 +59,6 @@ export class GCPStorageClient {
     const bucket = this.getBucket()
     const fileRef = bucket.file(filename)
     const downloaded = await fileRef.download()
-    return Buffer.from(downloaded[0].copyWithin(0))
+    return downloaded[0]
   }
 }

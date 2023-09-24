@@ -34,16 +34,14 @@ const testFirebaseStorage = async () => {
     projectId: process.env.FIREBASE_PROJECT_ID!,
     privateKey: process.env.FIREBASE_PRIVATE_KEY!,
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL!,
-    bucket: process.env.FIREBASE_STORAGE_BUCKET!
+    bucket: process.env.FIREBASE_STORAGE_BUCKET!,
+    defaultMediaPublic: true
   })
 
-  await firebaseStorageClient.addFile(
-    {
-      filename: testData.filename,
-      data: testData.data
-    },
-    true
-  )
+  await firebaseStorageClient.addFile({
+    filename: testData.filename,
+    data: testData.data
+  })
 
   await firebaseStorageClient.getFile(testData.filename)
 
@@ -55,16 +53,14 @@ const testGCPStorage = async () => {
     projectId: process.env.GCP_PROJECT_ID!,
     privateKey: process.env.GCP_PRIVATE_KEY!,
     clientEmail: process.env.GCP_CLIENT_EMAIL!,
-    bucket: process.env.GCP_STORAGE_BUCKET!
+    bucket: process.env.GCP_STORAGE_BUCKET!,
+    defaultMediaPublic: true
   })
 
-  await gcpStorageClient.addFile(
-    {
-      filename: testData.filename,
-      data: testData.data
-    },
-    true
-  )
+  await gcpStorageClient.addFile({
+    filename: testData.filename,
+    data: testData.data
+  })
 
   await gcpStorageClient.getFile(testData.filename)
 

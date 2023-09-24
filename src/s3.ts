@@ -5,7 +5,7 @@ import {
   PutObjectCommand
 } from '@aws-sdk/client-s3'
 import { z } from 'zod'
-import { AddFileOptions, S3ClientOptions } from './types'
+import { AddFileOptions } from './types'
 
 const S3ClientOptionsZ = z.object({
   region: z.string().min(1),
@@ -23,7 +23,7 @@ export class S3Client {
   private bucket: string
   private host?: string
 
-  constructor(options: S3ClientOptions) {
+  constructor(options: z.infer<typeof S3ClientOptionsZ>) {
     const parsed = S3ClientOptionsZ.parse(options)
 
     this.region = parsed.region

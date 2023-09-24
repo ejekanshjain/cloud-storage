@@ -1,6 +1,6 @@
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob'
 import { z } from 'zod'
-import { AddFileOptions, AzureStorageClientOptions } from './types'
+import { AddFileOptions } from './types'
 
 const AzureStorageClientOptionsZ = z.object({
   connectionString: z.string().min(1),
@@ -13,7 +13,7 @@ export class AzureStorageClient {
   private blobServiceClient: BlobServiceClient
   private containerClient: ContainerClient
 
-  constructor(options: AzureStorageClientOptions) {
+  constructor(options: z.infer<typeof AzureStorageClientOptionsZ>) {
     const parsed = AzureStorageClientOptionsZ.parse(options)
     this.connectionString = parsed.connectionString
     this.containerName = parsed.containerName
