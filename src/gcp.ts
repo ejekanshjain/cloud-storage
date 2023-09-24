@@ -10,55 +10,48 @@ const GCPStorageClientOptionsZ = z.object({
   defaultMediaPublic: z.boolean()
 })
 
-export class GCPStorageClient {
-  private projectId: string
-  private privateKey: string
-  private clientEmail: string
-  private bucket: string
-  private storage: Storage
-  private isPublic: boolean
+export const GCPStorageClient = (
+  options?: z.infer<typeof GCPStorageClientOptionsZ>
+) => {
+  const { projectId, privateKey, clientEmail, bucket, defaultMediaPublic } =
+    GCPStorageClientOptionsZ.parse(options)
 
-  constructor(options?: z.infer<typeof GCPStorageClientOptionsZ>) {
-    const parsed = GCPStorageClientOptionsZ.parse(options)
-    this.projectId = parsed.projectId
-    this.privateKey = parsed.privateKey
-    this.clientEmail = parsed.clientEmail
-    this.bucket = parsed.bucket
-    this.isPublic = parsed.defaultMediaPublic
+  const storage = new Storage({
+    projectId,
+    credentials: {
+      private_key: privateKey,
+      client_email: clientEmail
+    }
+  })
 
-    this.storage = new Storage({
-      projectId: this.projectId,
-      credentials: {
-        private_key: this.privateKey,
-        client_email: this.clientEmail
-      }
-    })
-  }
+  const getBucket = () => storage.bucket(bucket)
 
-  private getBucket() {
-    return this.storage.bucket(this.bucket)
-  }
-
-  async addFile(options: AddFileOptions) {
-    const bucket = this.getBucket()
+  const addFile = async (options: AddFileOptions) => {
+    const bucket = getBucket()
     const fileRef = bucket.file(options.filename)
     await fileRef.save(options.data, {
-      public: this.isPublic
+      public: defaultMediaPublic
     })
     const url = fileRef.publicUrl()
     return url
   }
 
-  async deleteFile(filename: string) {
-    const bucket = this.getBucket()
+  const deleteFile = async (filename: string) => {
+    const bucket = getBucket()
     const fileRef = bucket.file(filename)
     await fileRef.delete()
   }
 
-  async getFile(filename: string) {
-    const bucket = this.getBucket()
+  const getFile = async (filename: string) => {
+    const bucket = getBucket()
     const fileRef = bucket.file(filename)
     const downloaded = await fileRef.download()
     return downloaded[0]
+  }
+
+  return {
+    addFile,
+    deleteFile,
+    getFile
   }
 }

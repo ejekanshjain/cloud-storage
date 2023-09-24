@@ -1,4 +1,4 @@
-import { BlobServiceClient, ContainerClient } from '@azure/storage-blob'
+import { BlobServiceClient } from '@azure/storage-blob'
 import { z } from 'zod'
 import { AddFileOptions } from './types'
 
@@ -7,36 +7,19 @@ const AzureStorageClientOptionsZ = z.object({
   containerName: z.string().min(1)
 })
 
-export class AzureStorageClient {
-  private connectionString: string
-  private containerName: string
-  private blobServiceClient: BlobServiceClient
-  private containerClient: ContainerClient
+export const AzureStorageClient = (
+  options: z.infer<typeof AzureStorageClientOptionsZ>
+) => {
+  const { connectionString, containerName } =
+    AzureStorageClientOptionsZ.parse(options)
 
-  constructor(options: z.infer<typeof AzureStorageClientOptionsZ>) {
-    const parsed = AzureStorageClientOptionsZ.parse(options)
-    this.connectionString = parsed.connectionString
-    this.containerName = parsed.containerName
-    this.blobServiceClient = BlobServiceClient.fromConnectionString(
-      this.connectionString
-    )
-    this.containerClient = this.blobServiceClient.getContainerClient(
-      this.containerName
-    )
-  }
+  const blobServiceClient =
+    BlobServiceClient.fromConnectionString(connectionString)
 
-  async getBlobServiceClient() {
-    return this.blobServiceClient
-  }
+  const containerClient = blobServiceClient.getContainerClient(containerName)
 
-  async getContainerClient() {
-    return this.containerClient
-  }
-
-  async addFile(options: AddFileOptions) {
-    const blockBlobClient = this.containerClient.getBlockBlobClient(
-      options.filename
-    )
+  const addFile = async (options: AddFileOptions) => {
+    const blockBlobClient = containerClient.getBlockBlobClient(options.filename)
     let data: Buffer
     if (typeof options.data === 'string') data = Buffer.from(options.data)
     else data = options.data
@@ -45,14 +28,20 @@ export class AzureStorageClient {
     return blockBlobClient.url
   }
 
-  async deleteFile(filename: string) {
-    const blockBlobClient = this.containerClient.getBlockBlobClient(filename)
+  const deleteFile = async (filename: string) => {
+    const blockBlobClient = containerClient.getBlockBlobClient(filename)
     await blockBlobClient.delete()
   }
 
-  async getFile(filename: string) {
-    const blockBlobClient = this.containerClient.getBlockBlobClient(filename)
+  const getFile = async (filename: string) => {
+    const blockBlobClient = containerClient.getBlockBlobClient(filename)
     const buffer = await blockBlobClient.downloadToBuffer()
     return Buffer.from(buffer)
+  }
+
+  return {
+    addFile,
+    deleteFile,
+    getFile
   }
 }

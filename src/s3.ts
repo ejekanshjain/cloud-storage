@@ -1,5 +1,5 @@
 import {
-  S3Client as AS3Client,
+  S3Client as AWSS3Client,
   DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand
@@ -15,64 +15,46 @@ const S3ClientOptionsZ = z.object({
   host: z.string().optional()
 })
 
-export class S3Client {
-  private region: string
-  private accessKey: string
-  private accessSecret: string
-  private s3Client: AS3Client
-  private bucket: string
-  private host?: string
+export const S3Client = (options: z.infer<typeof S3ClientOptionsZ>) => {
+  const { region, accessKey, accessSecret, bucket, host } =
+    S3ClientOptionsZ.parse(options)
 
-  constructor(options: z.infer<typeof S3ClientOptionsZ>) {
-    const parsed = S3ClientOptionsZ.parse(options)
+  const s3Client = new AWSS3Client({
+    region: region,
+    credentials: {
+      accessKeyId: accessKey,
+      secretAccessKey: accessSecret
+    },
+    endpoint: host,
+    forcePathStyle: !!host
+  })
 
-    this.region = parsed.region
-    this.accessKey = parsed.accessKey
-    this.accessSecret = parsed.accessSecret
-    this.bucket = parsed.bucket
-    this.host = parsed.host
-
-    this.s3Client = new AS3Client({
-      region: this.region,
-      credentials: {
-        accessKeyId: this.accessKey,
-        secretAccessKey: this.accessSecret
-      },
-      endpoint: this.host,
-      forcePathStyle: !!this.host
-    })
-  }
-
-  getClient() {
-    return this.s3Client
-  }
-
-  async addFile(options: AddFileOptions) {
-    await this.s3Client.send(
+  const addFile = async (options: AddFileOptions) => {
+    await s3Client.send(
       new PutObjectCommand({
-        Bucket: this.bucket,
+        Bucket: bucket,
         Key: options.filename,
         Body: options.data
       })
     )
-    return this.host
-      ? `${this.host}/${this.bucket}/${options.filename}`
-      : `https://${this.bucket}.s3.${this.region}.amazonaws.com/${options.filename}`
+    return host
+      ? `${host}/${bucket}/${options.filename}`
+      : `https://${bucket}.s3.${region}.amazonaws.com/${options.filename}`
   }
 
-  async deleteFile(filename: string) {
-    await this.s3Client.send(
+  const deleteFile = async (filename: string) => {
+    await s3Client.send(
       new DeleteObjectCommand({
-        Bucket: this.bucket,
+        Bucket: bucket,
         Key: filename
       })
     )
   }
 
-  async getFile(filename: string) {
-    const response = await this.s3Client.send(
+  const getFile = async (filename: string) => {
+    const response = await s3Client.send(
       new GetObjectCommand({
-        Bucket: this.bucket,
+        Bucket: bucket,
         Key: filename
       })
     )
@@ -80,5 +62,11 @@ export class S3Client {
     if (!response.Body) throw new Error('AWS S3: No body in response')
 
     return Buffer.from((await response.Body.transformToByteArray()).buffer)
+  }
+
+  return {
+    addFile,
+    deleteFile,
+    getFile
   }
 }

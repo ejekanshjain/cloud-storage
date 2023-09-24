@@ -11,7 +11,7 @@ const testData = {
 }
 
 const testS3 = async () => {
-  const s3Client = new S3Client({
+  const s3Client = S3Client({
     region: process.env.AWS_REGION!,
     accessKey: process.env.AWS_ACCESS_KEY!,
     accessSecret: process.env.AWS_ACCESS_SECRET!,
@@ -30,7 +30,7 @@ const testS3 = async () => {
 }
 
 const testFirebaseStorage = async () => {
-  const firebaseStorageClient = new GCPStorageClient({
+  const firebaseStorageClient = GCPStorageClient({
     projectId: process.env.FIREBASE_PROJECT_ID!,
     privateKey: process.env.FIREBASE_PRIVATE_KEY!,
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL!,
@@ -49,7 +49,7 @@ const testFirebaseStorage = async () => {
 }
 
 const testGCPStorage = async () => {
-  const gcpStorageClient = new GCPStorageClient({
+  const gcpStorageClient = GCPStorageClient({
     projectId: process.env.GCP_PROJECT_ID!,
     privateKey: process.env.GCP_PRIVATE_KEY!,
     clientEmail: process.env.GCP_CLIENT_EMAIL!,
@@ -68,7 +68,7 @@ const testGCPStorage = async () => {
 }
 
 const testAzureStorage = async () => {
-  const azureStorageClient = new AzureStorageClient({
+  const azureStorageClient = AzureStorageClient({
     connectionString: process.env.AZURE_STORAGE_CONNECTION_STRING!,
     containerName: process.env.AZURE_STORAGE_CONTAINER_NAME!
   })
@@ -84,7 +84,7 @@ const testAzureStorage = async () => {
 }
 
 const testR2 = async () => {
-  const r2Client = new S3Client({
+  const r2Client = S3Client({
     region: process.env.R2_REGION!,
     accessKey: process.env.R2_ACCESS_KEY!,
     accessSecret: process.env.R2_ACCESS_SECRET!,
