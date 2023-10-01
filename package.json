@@ -1,6 +1,6 @@
 {
   "name": "@ejekanshjain/cloud-storage",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "All in one package to handle files accross cloud storage services",
   "main": "build/index.js",
   "scripts": {
