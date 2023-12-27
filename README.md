@@ -31,3 +31,21 @@ await s3Client.deleteFile("test.txt")
 ```
 
 ## You can use the similar approach for Cloudflare R2, GCP Buckets, Azure Storage Buckets, Firebase Storage
+
+### Troubleshoot gcp/firebase storage bucket for cors error on anonymous
+Go to Cloud console
+Create a file cors.json
+```
+[
+  {
+    "origin": ["https://example.com"],
+    "method": ["GET"],
+    "maxAgeSeconds": 3600
+  }
+]
+```
+
+Now run this command
+```
+gsutil cors set cors.json gs://exampleproject.appspot.com
+```
